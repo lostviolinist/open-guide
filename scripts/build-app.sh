@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+configuration="${CONFIGURATION:-debug}"
+build_path="${OPENGUIDE_BUILD_PATH:-$PWD/.build}"
+export CLANG_MODULE_CACHE_PATH="${CLANG_MODULE_CACHE_PATH:-$build_path/clang-cache}"
+export SWIFTPM_MODULECACHE_OVERRIDE="${SWIFTPM_MODULECACHE_OVERRIDE:-$build_path/clang-cache}"
+swift build -c "$configuration" --disable-sandbox --scratch-path "$build_path" --cache-path "$build_path/swiftpm-cache"
+binary_directory="$(swift build -c "$configuration" --show-bin-path --disable-sandbox --scratch-path "$build_path" --cache-path "$build_path/swiftpm-cache")"
+application_path="$PWD/dist/OpenGuide.app"
+mkdir -p "$application_path/Contents/MacOS" "$application_path/Contents/Resources"
+cp "$binary_directory/OpenGuide" "$application_path/Contents/MacOS/OpenGuide"
+cp packaging/Info.plist "$application_path/Contents/Info.plist"
+cp LICENSE "$application_path/Contents/Resources/LICENSE"
+codesign --force --sign "${SIGNING_IDENTITY:--}" "$application_path"
+printf 'Built %s\n' "$application_path"

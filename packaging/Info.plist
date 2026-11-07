@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>OpenGuide</string>
+<key>CFBundleIdentifier</key><string>org.openguide.mac</string>
+<key>CFBundleName</key><string>OpenGuide</string>
+<key>CFBundleDisplayName</key><string>OpenGuide</string>
+<key>CFBundlePackageType</key><string>APPL</string>
+<key>CFBundleShortVersionString</key><string>0.1.0</string>
+<key>CFBundleVersion</key><string>1</string>
+<key>LSMinimumSystemVersion</key><string>14.2</string>
+<key>LSUIElement</key><true/>
+<key>NSHighResolutionCapable</key><true/>
+<key>NSMicrophoneUsageDescription</key><string>OpenGuide records your question only when you choose Dictate.</string>
+<key>NSSpeechRecognitionUsageDescription</key><string>OpenGuide transcribes your question using on-device speech recognition.</string>
+<key>NSScreenCaptureUsageDescription</key><string>OpenGuide captures the region you select to explain it and follow your guided interactions.</string>
+</dict></plist>
