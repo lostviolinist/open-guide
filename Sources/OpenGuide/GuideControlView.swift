@@ -70,7 +70,10 @@ struct GuideControlView: View {
                         HStack {
                             ProgressView().controlSize(.small)
                             Button("Stop") { session.stop() }.buttonStyle(GuideButtonStyle())
-                            if !session.isWaiting {
+                            if session.isWaiting {
+                                Button("Recheck") { session.recheckContext() }.buttonStyle(GuideButtonStyle())
+                                    .help("Capture the selected region again even if the hover or click was not detected")
+                            } else {
                                 Button("Skip speech") { session.advanceWithoutSpeech() }.buttonStyle(GuideButtonStyle())
                             }
                         }
@@ -90,6 +93,15 @@ struct GuideControlView: View {
                             Text("\(session.document?.title ?? "Session notes")").font(.headline)
                             Spacer()
                             Button("Clear") { session.clearNotes() }.buttonStyle(GuideButtonStyle())
+                        }
+                        if let document = session.document, !document.steps.isEmpty {
+                            let step = document.steps[session.currentStepIndex ?? (document.steps.count - 1)]
+                            DrawingCanvas(marks: step.marks, interaction: step.interaction)
+                                .frame(height: 150)
+                                .background(Color.white.opacity(0.03), in: RoundedRectangle(cornerRadius: 10))
+                                .overlay(alignment: .bottomLeading) {
+                                    Text("DRAWING PREVIEW").font(.system(size: 8, design: .monospaced)).foregroundStyle(.secondary).padding(8)
+                                }
                         }
                         ForEach(Array(session.completedNarration.enumerated()), id: \.offset) { index, narration in
                             HStack(alignment: .top, spacing: 12) {

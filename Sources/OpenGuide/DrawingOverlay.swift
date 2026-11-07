@@ -107,12 +107,19 @@ private struct DemoStageView: View {
                     }.font(.system(size: 15, weight: .medium)).foregroundStyle(.mint)
                 }
                 .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.35)
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(hovering ? Color.mint.opacity(0.25) : Color.white.opacity(0.06))
-                    .overlay(Text(hovering ? "New context revealed ✓" : "Hover to explore").font(.headline))
-                    .frame(width: geometry.size.width * 0.4, height: geometry.size.height * 0.16)
-                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.76)
-                    .onHover { hovering = $0 }
+                Button {} label: {
+                    Text(hovering ? "New context revealed ✓" : "Hover to explore")
+                        .font(.headline)
+                        .frame(width: geometry.size.width * 0.4, height: geometry.size.height * 0.16)
+                        .background(hovering ? Color.mint.opacity(0.25) : Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Demo hover target")
+                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.76)
+                .onHover { inside in
+                    hovering = inside
+                    if inside { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                }
                 Text("LOCAL DEMO  /  NO SCREEN CAPTURE  /  NO NETWORK")
                     .font(.system(size: 10, weight: .medium, design: .monospaced)).foregroundStyle(.secondary)
                     .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.94)

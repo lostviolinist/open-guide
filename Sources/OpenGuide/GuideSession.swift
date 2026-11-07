@@ -28,6 +28,8 @@ final class GuideSession: ObservableObject {
     private var generation = UUID()
     private var screenObserver: NSObjectProtocol?
     private var demoRegion: CGRect?
+    private var recheckRequested = false
+    private var interactionObservation: String?
 
     init() {
         screenObserver = NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
@@ -120,6 +122,10 @@ final class GuideSession: ObservableObject {
         }
     }
     func advanceWithoutSpeech() { speech.stop() }
+    func recheckContext() {
+        guard isWaiting else { return }
+        recheckRequested = true
+    }
 
     private func requestAndPlay(selection: ScreenSelection, question: String, previous: GuideDocument?,
                                 interaction: String?, token: UUID, depth: Int) async throws {
@@ -140,7 +146,7 @@ final class GuideSession: ObservableObject {
             status = "Interaction observed · refreshing selection…"
             try await Task.sleep(nanoseconds: 600_000_000)
             try await requestAndPlay(selection: selection, question: question, previous: document,
-                                     interaction: interaction.label, token: token, depth: depth + 1)
+                                     interaction: interactionObservation ?? interaction.label, token: token, depth: depth + 1)
         }
     }
     private func play(_ document: GuideDocument, region: CGRect, token: UUID, continuation: Bool = true) async throws {
@@ -182,6 +188,8 @@ final class GuideSession: ObservableObject {
     }
     private func waitForInteraction(_ interaction: GuideInteraction, region: CGRect, token: UUID) async throws {
         var gate = InteractionGate()
+        recheckRequested = false
+        interactionObservation = nil
         let target = interaction.target.appKitFrame(in: region)
         let deadline = ProcessInfo.processInfo.systemUptime + 90
         // Seed button state so a click already held when narration finishes cannot complete a step.
@@ -190,10 +198,17 @@ final class GuideSession: ObservableObject {
                         dwellMilliseconds: interaction.dwellMilliseconds)
         while ProcessInfo.processInfo.systemUptime < deadline {
             try check(token)
+            if recheckRequested {
+                interactionObservation = "The user requested a new observation. The target interaction was not verified: " + interaction.label
+                return
+            }
             let completed = gate.update(inside: target.contains(NSEvent.mouseLocation),
                 mouseDown: NSEvent.pressedMouseButtons & 1 != 0, time: ProcessInfo.processInfo.systemUptime,
                 kind: interaction.kind, dwellMilliseconds: interaction.dwellMilliseconds)
-            if completed { return }
+            if completed {
+                interactionObservation = "Observed a " + interaction.kind.rawValue + " at the target: " + interaction.label
+                return
+            }
             try await Task.sleep(nanoseconds: 40_000_000)
         }
         throw GuideAppError("The interaction timed out. Select the region again if the screen moved.")

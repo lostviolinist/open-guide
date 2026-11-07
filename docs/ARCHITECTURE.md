@@ -29,7 +29,7 @@ OpenGuide is the root Swift package. It preserves the public Clicky repository a
 5. The host decodes and validates the complete document before displaying anything.
 6. Each step replaces the marks and plays its narration. Speech completion advances the timeline; muted mode uses bounded reading time.
 7. An optional final hover/click checkpoint waits for the user. Continuous hover dwell is required; dragging a held mouse button into a click target does not complete it.
-8. The host clears marks, waits 600 ms, captures the same region again, and sends the latest document and original question as continuation context. Maximum five model rounds per request.
+8. A Recheck control can request a fresh observation without claiming that a physical interaction was verified. The host clears marks, waits 600 ms, captures the same region again, and sends the latest document and original question as continuation context. Maximum five model rounds per request.
 9. Stop invalidates the session generation, cancels networking/playback, and removes marks. Notes remain in memory until cleared or the app exits.
 
 All screen geometry uses the selected display's actual AppKit frame, including negative display origins. Normalized coordinates use a top-left origin. Display layout changes stop the session and invalidate the selection.

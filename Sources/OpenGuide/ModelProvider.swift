@@ -18,7 +18,7 @@ struct AnthropicGuideProvider: GuideModelProvider {
         guard !apiKey.isEmpty else { throw GuideAppError("Add your Anthropic API key in Settings first.") }
         var prompt = "Question: \(question)"
         if let previous, let encoded = try? JSONEncoder().encode(previous), let previousText = String(data: encoded, encoding: .utf8) {
-            prompt += "\nPrevious explanation: \(previousText)\nThe user completed: \(interaction ?? "the requested interaction"). This is a fresh capture of the same selected region. Inspect what is now visible and continue. Do not claim a change occurred unless visible."
+            prompt += "\nPrevious explanation: \(previousText)\nInteraction observation: \(interaction ?? "No verified interaction"). This is a fresh capture of the same selected region. Inspect what is now visible and continue. Do not claim a change occurred unless visible."
         }
         let schema = try JSONSerialization.jsonObject(with: Data(Self.toolSchema.utf8))
         let body: [String: Any] = [

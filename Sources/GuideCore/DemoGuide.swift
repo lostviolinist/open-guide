@@ -14,7 +14,7 @@ public enum DemoGuide {
     """
     public static let continuation = """
     {"version":1,"title":"The loop is complete","steps":[
-      {"id":"complete","narration":"You did it. In a live session, OpenGuide now captures the selected region again and asks the model what changed. This demo stays entirely on your Mac.","marks":[
+      {"id":"complete","narration":"The walkthrough continues. In a live session, OpenGuide now captures the selected region again and asks the model what changed. This demo stays entirely on your Mac.","marks":[
         {"id":"done","kind":"label","color":"mint","rect":{"x":0.12,"y":0.28,"width":0.76,"height":0.2},"text":"Observe → explain → interact → observe"}]}]}
     """
 }

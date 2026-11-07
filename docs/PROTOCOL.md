@@ -14,7 +14,7 @@ A point is `{ "x": 0.5, "y": 0.4 }`. A rect is `{ "x": 0.1, "y": 0.2, "width": 0
 
 Only the last step may contain `interaction`: `kind` (`hover` or `click`), `target` (rect), `label` (1–160 characters), and `dwellMilliseconds` (300–3000). Dwell applies to hover. A click requires a new physical mouse-down inside the target. The host does not synthesize input. Waits time out after 90 seconds.
 
-After an interaction, the host discards screen marks, recaptures the same region, and requests a new document. No queued drawing commands from the old document run after that boundary.
+The user may explicitly choose Recheck to request an observation without a verified interaction; this distinction is passed to the model. After an interaction or Recheck, the host discards screen marks, recaptures the same region, and requests a new document. No queued drawing commands from the old document run after that boundary.
 
 ```json
 {
